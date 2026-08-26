@@ -49,7 +49,7 @@ Accounts, saved searches, historical coverage prediction, events, METAR filterin
 src/app/                       pages, styling, and server endpoints
 src/components/                interactive UI
 src/lib/vatsim/                VATSIM data access and validation
-src/lib/flight-finder/         route types, filters, and scoring
+src/lib/flight-finder/         route dataset, validation, filters, and scoring
 .github/workflows/ci.yml       pull-request quality checks
 ```
 
