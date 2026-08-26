@@ -1,9 +1,23 @@
 import type { CandidateRoute } from "./types";
+import { routeDataset } from "./dataset";
 
-// Temporary seed data for the UI. Milestone 1 replaces ATC flags with live feed data.
-export const sampleRoutes: CandidateRoute[] = [
-  { departure: "KCLT", arrival: "KATL", durationMinutes: 65, trafficLevel: "moderate", departureAtc: true, arrivalAtc: true, centerAtc: true },
-  { departure: "KATL", arrival: "KMCO", durationMinutes: 78, trafficLevel: "busy", departureAtc: true, arrivalAtc: true, centerAtc: false },
-  { departure: "KPHX", arrival: "KLAS", durationMinutes: 62, trafficLevel: "moderate", departureAtc: true, arrivalAtc: false, centerAtc: true },
-  { departure: "KBOS", arrival: "KJFK", durationMinutes: 55, trafficLevel: "busy", departureAtc: false, arrivalAtc: true, centerAtc: true },
-];
+// Temporary UI state. The next milestone replaces these preview signals with live feed data.
+const previewSignals = [
+  { id: "kclt-katl", trafficLevel: "moderate", departureAtc: true, arrivalAtc: true, centerAtc: true },
+  { id: "katl-kmco", trafficLevel: "busy", departureAtc: true, arrivalAtc: true, centerAtc: false },
+  { id: "kord-kdtw", trafficLevel: "moderate", departureAtc: true, arrivalAtc: false, centerAtc: true },
+  { id: "kbos-kjfk", trafficLevel: "busy", departureAtc: false, arrivalAtc: true, centerAtc: true },
+] as const;
+
+export const sampleRoutes: CandidateRoute[] = previewSignals.map(({ id, ...signals }) => {
+  const route = routeDataset.routes.find((candidate) => candidate.id === id);
+
+  if (!route) throw new Error(`Preview route is missing from the route dataset: ${id}`);
+
+  return {
+    departure: route.departure,
+    arrival: route.arrival,
+    durationMinutes: route.estimatedDurationMinutes,
+    ...signals,
+  };
+});
