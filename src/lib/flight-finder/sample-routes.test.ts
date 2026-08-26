@@ -4,6 +4,8 @@ import { sampleRoutes } from "./sample-routes";
 
 describe("sampleRoutes", () => {
   it("uses canonical airport pairs and durations from the route dataset", () => {
+    expect(sampleRoutes).toHaveLength(routeDataset.routes.length);
+
     for (const sampleRoute of sampleRoutes) {
       const datasetRoute = routeDataset.routes.find(
         (route) =>

@@ -10,7 +10,11 @@ export default defineConfig({
     coverage: {
       provider: "v8",
       reporter: ["text", "html"],
-      include: ["src/lib/flight-finder/**/*.ts", "src/lib/vatsim/coverage.ts"],
+      include: [
+        "src/lib/flight-finder/**/*.ts",
+        "src/lib/vatsim/client.ts",
+        "src/lib/vatsim/coverage.ts",
+      ],
       thresholds: { lines: 80, functions: 80, branches: 75, statements: 80 },
     },
   },

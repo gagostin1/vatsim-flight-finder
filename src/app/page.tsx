@@ -1,9 +1,11 @@
 import { FlightFinder } from "@/components/flight-finder";
 import { LiveStatus } from "@/components/live-status";
+import { VatsimStatusProvider } from "@/components/vatsim-status-provider";
 
 export default function Home() {
   return (
-    <main>
+    <VatsimStatusProvider>
+      <main>
       <nav><a className="brand" href="#top"><span>VF</span> VATSIM Flight Finder</a><a href="https://vatsim.net" target="_blank" rel="noreferrer">VATSIM ↗</a></nav>
       <header id="top">
         <div className="header-copy">
@@ -16,6 +18,7 @@ export default function Home() {
       </header>
       <FlightFinder />
       <footer><span>Built for the VATSIM community.</span><span>Data refreshes approximately every 15 seconds.</span></footer>
-    </main>
+      </main>
+    </VatsimStatusProvider>
   );
 }
