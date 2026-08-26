@@ -14,7 +14,7 @@ The catalog intentionally includes only a small selection of eastern United Stat
 
 ## Routes and estimates
 
-Route pairs, center associations, and estimated durations were curated specifically for this
+Route pairs, VATSIM center callsign prefixes, and estimated durations were curated specifically for this
 project. Durations are rounded gate-to-gate planning estimates for filtering recommendations;
 they are not schedules, dispatch calculations, or navigation data. Actual flight time varies
 with aircraft, routing, winds, traffic, and airport conditions.

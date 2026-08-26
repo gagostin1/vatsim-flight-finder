@@ -1,9 +1,11 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { applyControllerCoverage } from "@/lib/flight-finder/coverage-matching";
 import { rankRoutes } from "@/lib/flight-finder/score";
 import { sampleRoutes } from "@/lib/flight-finder/sample-routes";
 import type { SearchPreferences, TrafficPreference } from "@/lib/flight-finder/types";
+import { useVatsimStatus } from "./vatsim-status-provider";
 
 const initialPreferences: SearchPreferences = {
   maxMinutes: 90,
@@ -14,7 +16,14 @@ const initialPreferences: SearchPreferences = {
 
 export function FlightFinder() {
   const [preferences, setPreferences] = useState(initialPreferences);
-  const routes = useMemo(() => rankRoutes(sampleRoutes, preferences), [preferences]);
+  const status = useVatsimStatus();
+  const routes = useMemo(
+    () =>
+      status
+        ? rankRoutes(applyControllerCoverage(sampleRoutes, status.coverage), preferences)
+        : [],
+    [preferences, status],
+  );
 
   return (
     <section className="finder-grid" aria-label="Flight finder">
@@ -64,7 +73,7 @@ export function FlightFinder() {
           Require arrival ATC
         </label>
 
-        <p className="form-note">MVP preview uses a small route catalog. Live coverage matching comes next.</p>
+        <p className="form-note">ATC coverage is matched from live VATSIM controllers. Traffic levels remain preview estimates.</p>
       </form>
 
       <div className="results">
@@ -72,7 +81,7 @@ export function FlightFinder() {
           <span>02</span>
           <div><p>Ranked for you</p><h2>Best matches</h2></div>
         </div>
-        {routes.length ? routes.map((route, index) => (
+        {!status ? <div className="empty-state">Connecting to live VATSIM coverage...</div> : routes.length ? routes.map((route, index) => (
           <article className="route-card" key={`${route.departure}-${route.arrival}`}>
             <div className="route-main">
               <span className="eyebrow">{index === 0 ? "Top match" : `Option ${index + 1}`}</span>
@@ -82,7 +91,7 @@ export function FlightFinder() {
             </div>
             <div className="score"><strong>{route.score}</strong><span>match</span></div>
           </article>
-        )) : <div className="empty-state">No routes match every requirement yet. Try allowing one uncovered airport or adding more time.</div>}
+        )) : <div className="empty-state">No routes match every requirement right now. Try allowing one uncovered airport or adding more time.</div>}
       </div>
     </section>
   );

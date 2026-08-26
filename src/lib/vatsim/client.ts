@@ -1,16 +1,28 @@
+import { parseControllerCoverage, type ControllerCoverage } from "./coverage";
+
 const DEFAULT_DATA_URL = "https://data.vatsim.net/v3/vatsim-data.json";
+
+type VatsimController = {
+  callsign: string;
+};
 
 type VatsimData = {
   general: { update_timestamp: string };
   pilots: unknown[];
-  controllers: unknown[];
+  controllers: VatsimController[];
 };
 
 export type VatsimStatus = {
   updatedAt: string;
   pilotsOnline: number;
   controllersOnline: number;
+  coverage: ControllerCoverage;
 };
+
+function isVatsimController(value: unknown): value is VatsimController {
+  if (!value || typeof value !== "object") return false;
+  return typeof (value as Partial<VatsimController>).callsign === "string";
+}
 
 function isVatsimData(value: unknown): value is VatsimData {
   if (!value || typeof value !== "object") return false;
@@ -19,7 +31,8 @@ function isVatsimData(value: unknown): value is VatsimData {
     data.general &&
       typeof data.general.update_timestamp === "string" &&
       Array.isArray(data.pilots) &&
-      Array.isArray(data.controllers),
+      Array.isArray(data.controllers) &&
+      data.controllers.every(isVatsimController),
   );
 }
 
@@ -37,5 +50,6 @@ export async function getVatsimStatus(): Promise<VatsimStatus> {
     updatedAt: data.general.update_timestamp,
     pilotsOnline: data.pilots.length,
     controllersOnline: data.controllers.length,
+    coverage: parseControllerCoverage(data.controllers.map((controller) => controller.callsign)),
   };
 }

@@ -11,7 +11,7 @@ const validDataset: RouteDataset = {
       municipality: "New York",
       latitude: 40.639447,
       longitude: -73.779317,
-      centerCode: "ZNY",
+      centerCode: "NY",
     },
     {
       icao: "KBOS",
@@ -19,7 +19,7 @@ const validDataset: RouteDataset = {
       municipality: "Boston",
       latitude: 42.36197,
       longitude: -71.0079,
-      centerCode: "ZBW",
+      centerCode: "BOS",
     },
   ],
   routes: [
@@ -28,7 +28,7 @@ const validDataset: RouteDataset = {
       departure: "KJFK",
       arrival: "KBOS",
       estimatedDurationMinutes: 70,
-      centerCodes: ["ZNY", "ZBW"],
+      centerCodes: ["NY", "BOS"],
     },
   ],
 };
@@ -153,12 +153,12 @@ describe("validateRouteDataset", () => {
   it("requires unique center codes covering both endpoint centers", () => {
     const invalidDataset: RouteDataset = {
       airports: validDataset.airports,
-      routes: [{ ...validDataset.routes[0], centerCodes: ["ZNY", "ZNY"] }],
+      routes: [{ ...validDataset.routes[0], centerCodes: ["NY", "NY"] }],
     };
 
     expect(validateRouteDataset(invalidDataset)).toEqual([
-      "Route kjfk-kbos repeats center code: ZNY",
-      "Route kjfk-kbos does not include arrival center: ZBW",
+      "Route kjfk-kbos repeats center code: NY",
+      "Route kjfk-kbos does not include arrival center: BOS",
     ]);
   });
 
@@ -172,7 +172,7 @@ describe("validateRouteDataset", () => {
             departure: "KJFK",
             arrival: "KBOS",
             estimatedDurationMinutes: 70,
-            centerCodes: ["ZNY"],
+            centerCodes: ["NY"],
           },
         ],
       }),
